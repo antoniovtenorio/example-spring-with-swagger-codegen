@@ -1,11 +1,11 @@
 package br.tenorioprojects.app.cpproject.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Data
@@ -14,18 +14,20 @@ import java.util.Set;
 @Table(name = "SER_PRODUCT_ITEM")
 public class ProductItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "QUANTITY")
     private Integer quantity;
 
-    @Column(name = "PURCHASE_PRICE")
-    private Double purchaseprice;
+    @Column(name = "DISCOUNT")
+    private Double discount;
 
-    @ManyToOne
-    private Product product;
+//    @ManyToOne
+//    private Product product;
 
-    @ManyToMany(mappedBy = "item")
-    private Set<Order> order;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SERVICE_ORDER_ID")
+    @JsonIgnore
+    private Order order;
 }

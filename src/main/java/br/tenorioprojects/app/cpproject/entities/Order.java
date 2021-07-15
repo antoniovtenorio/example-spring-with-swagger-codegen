@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
@@ -14,20 +14,33 @@ import java.util.Set;
 @Table(name = "SER_SERVICE_ORDER")
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @ManyToOne
+    @OneToOne
     private Client client;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 
-    @ManyToMany
-    @JoinTable(name = "SER_ITEM_PRODUCT_ITEM",
-            joinColumns = @JoinColumn(name = "ITEM_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "PRODUCT_ITEM_ID", referencedColumnName = "ID"))
-    private Set<ProductItem> item;
+    private List<ProductItem> items = new ArrayList<>();
 
+    public void addItems(ProductItem productItem) {
+        this.items.add(productItem);
+        productItem.setOrder(this);
+    }
+    public void setItem(ProductItem productItem) {
+        this.items.add(productItem);
+        productItem.setOrder(this);
+    }
+//    public void removeProductItem(ProductItem productItem) {
+//        this.orderService.remove(productItem);
+//    }
+//    public void removeProductItems() {
+//        for(ProductItem productItem: new HashSet<>(orderService)) {
+//            removeProductItem(productItem);
+//        }
+//    }
 
 }
